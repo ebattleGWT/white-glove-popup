@@ -20,9 +20,9 @@
 
 
 
-  function addToCartAndClosePopUp() {
-  var selectedProductId = document.querySelector('input[name="product"]:checked').getAttribute('data-product-id');
-  var quantity = 1; // Set the quantity to 1 for simplicity, but you can change this as needed
+ function addToCartAndClosePopUp() {
+  var selectedProductId = document.querySelector('input[name="product"]:checked').getAttribute('data-id');
+  var quantity = 1;
   var formData = new FormData();
   formData.append('id', selectedProductId);
   formData.append('quantity', quantity);
@@ -30,15 +30,15 @@
     method: 'POST',
     body: formData
   }).then(function(response) {
-    // Handle the response as needed
     console.log(response);
-    // Close the pop up
     var popup = document.getElementById('wgPopup');
     popup.classList.remove('show');
   }).catch(function(error) {
     console.error(error);
   });
 }
+
+
 </script>
     <div class="popup" id="myButton"> 
         
@@ -56,16 +56,16 @@
 <div class="wgSecOptions">
   <form>
   <div class="cornRow">
-    <input type="radio" name="wgshipping" value="whiteGlove" id="radio1" data-product-id="44860701573433" onclick="addToCartAndClosePopUp()">
-<label class="lockIn" for="radio1" onclick="addToCartAndClosePopUp()">
+    <input type="radio" name="wgshipping" value="whiteGlove" id="radio1" data-id="44860701573433" onclick="addToCartAndClosePopUp()">
+<label class="lockIn" for="radio1" onclick="addToCartAndClosePopUp()" data-id="44867378872633">
 <span class="planHead">White Glove</span>
 <div class="moneySec">
 <div class="billySign">$</div>
 <div class="numbaz">750</div>
 </div>
 </label>
-     <input type="radio" name="wgshipping" value="Standard"  id="radio2" data-product-id="44867378872633" onclick="addToCartAndClosePopUp()">
-<label class="lockIn" for="radio2" onclick="addToCartAndClosePopUp()">
+     <input type="radio" name="wgshipping" value="Standard"  id="radio2" data-id="44867378872633" onclick="addToCartAndClosePopUp()">
+<label class="lockIn" for="radio2" onclick="addToCartAndClosePopUp()" data-id="44867378872633">
     <span class="planHead">Standard Delivery</span>
     <div class="moneySec">
         <div class="billySign">$</div>
