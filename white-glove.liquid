@@ -1,5 +1,5 @@
 {{ 'wgPopup.css' | asset_url | stylesheet_tag }}
-
+{{ '//sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js' | script_tag }}
 
 
 <script>
@@ -17,6 +17,30 @@
       break; // Exit the loop early since the popup should only be shown once
     }
   }
+
+
+document.addEventListener('DOMContentLoaded', function() {
+  var addToCartForm = document.getElementById('add-to-cart-form');
+  addToCartForm.addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    var selectedRadioButton = document.querySelector('input[name="wgshipping"]:checked');
+    var productId = selectedRadioButton.getAttribute('data-product-id');
+    var variantId = selectedRadioButton.getAttribute('data-variant-id');
+    var quantity = document.getElementById('quantity').value;
+    var properties = {};
+
+    Shopify.addItem(productId, quantity, {
+      variant_id: variantId,
+      properties: properties
+    }, function(response) {
+      // Callback function to handle the response from the Shopify API
+      console.log(response);
+      window.location.href = '/cart'; // Redirect to the cart page
+    });
+  });
+});
+  
 </script>
     <div class="popup" id="myButton"> 
         
@@ -32,7 +56,7 @@
     <div class="daContent">
         <h1>Shipping Options</h1>
 <div class="wgSecOptions">
- 
+ <form id="add-to-cart-form">
   <div class="cornRow">
     <input type="radio" name="wgshipping" value="whiteGlove" id="radio1" data-product-id="44860701573433" data-variant-id="44860701573433">
 <label class="lockIn" for="radio1"  data-product-id="44867378872633" data-variant-id="44860701573433">
@@ -84,7 +108,8 @@
     </ul>
 </div>
 </div>
-
+<button class="daButton" id="add-to-cart-button" type="submit">Add To Cart</button>
+      </form>
 <div style="margin-top: 30px;font-size: 12px;font-style: italic;">
 Disclaimer: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 </div>
