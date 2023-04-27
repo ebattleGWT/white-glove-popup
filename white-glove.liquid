@@ -17,37 +17,6 @@
       break; // Exit the loop early since the popup should only be shown once
     }
   }
-
-
-  function addToCart() {
-  // Get the selected variant ID
-  var selectedVariantId = null;
-  var variantInputs = document.querySelectorAll('input[name="wgshipping"]');
-  for (var i = 0; i < variantInputs.length; i++) {
-    if (variantInputs[i].checked) {
-      selectedVariantId = variantInputs[i].getAttribute('data-variant-id');
-      break;
-    }
-  }
-  
-  // If no variant is selected, do nothing
-  if (!selectedVariantId) {
-    return;
-  }
-  
-  // Add the product to the cart
-  Shopify.addItem(selectedVariantId, 1, function(item) {
-    // Display a success message
-    alert("Added to cart!");
-    
-    // Close the pop-up
-    closeModal();
-    
-    // Update the cart count in the header
-    updateCartCount(item.quantity);
-  });
-}
-
 </script>
     <div class="popup" id="myButton"> 
         
@@ -65,16 +34,16 @@
 <div class="wgSecOptions">
  
   <div class="cornRow">
-    <input type="radio" name="wgshipping" value="whiteGlove" id="radio1" data-product-id="44860701573433" data-variant-id="44860701573433" onclick="addToCart()">
-<label class="lockIn" for="radio1"  data-product-id="44867378872633" data-variant-id="44860701573433" onclick="addToCart()">
+    <input type="radio" name="wgshipping" value="whiteGlove" id="radio1" data-product-id="44860701573433" data-variant-id="44860701573433">
+<label class="lockIn" for="radio1"  data-product-id="44867378872633" data-variant-id="44860701573433">
 <span class="planHead">White Glove</span>
 <div class="moneySec">
 <div class="billySign">$</div>
 <div class="numbaz">750</div>
 </div>
 </label>
-     <input type="radio" name="wgshipping" value="Standard"  id="radio2" data-product-id="44867378872633" data-variant-id="44867378872633" onclick="addToCart()">
-<label class="lockIn" for="radio2"  data-product-id="44867378872633" data-variant-id="44867378872633" onclick="addToCart()">
+     <input type="radio" name="wgshipping" value="Standard"  id="radio2" data-product-id="44867378872633" data-variant-id="44867378872633">
+<label class="lockIn" for="radio2"  data-product-id="44867378872633" data-variant-id="44867378872633">
     <span class="planHead">Standard Delivery</span>
     <div class="moneySec">
         <div class="billySign">$</div>
