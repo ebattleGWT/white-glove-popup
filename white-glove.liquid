@@ -17,28 +17,6 @@
       break; // Exit the loop early since the popup should only be shown once
     }
   }
-
-
-
- function addToCartAndClosePopUp() {
-  var selectedProductId = document.querySelector('input[name="product"]:checked').getAttribute('data-id');
-  var quantity = 1;
-  var formData = new FormData();
-  formData.append('id', selectedProductId);
-  formData.append('quantity', quantity);
-  fetch('/cart/add.js', {
-    method: 'POST',
-    body: formData
-  }).then(function(response) {
-    console.log(response);
-    var popup = document.getElementById('wgPopup');
-    popup.classList.remove('show');
-  }).catch(function(error) {
-    console.error(error);
-  });
-}
-
-
 </script>
     <div class="popup" id="myButton"> 
         
@@ -54,18 +32,18 @@
     <div class="daContent">
         <h1>Shipping Options</h1>
 <div class="wgSecOptions">
-  <form>
+  <form action="/cart/add" method="post" enctype="multipart/form-data" class="product-form">
   <div class="cornRow">
-    <input type="radio" name="wgshipping" value="whiteGlove" id="radio1" data-id="44860701573433" onclick="addToCartAndClosePopUp()">
-<label class="lockIn" for="radio1" onclick="addToCartAndClosePopUp()" data-id="44867378872633">
+    <input type="radio" name="wgshipping" value="44860701573433" id="radio1" data-product-id="44860701573433" onclick="addToCartAndClosePopUp()">
+<label class="lockIn" for="radio1" onclick="addToCartAndClosePopUp()" data-product-id="44867378872633">
 <span class="planHead">White Glove</span>
 <div class="moneySec">
 <div class="billySign">$</div>
 <div class="numbaz">750</div>
 </div>
 </label>
-     <input type="radio" name="wgshipping" value="Standard"  id="radio2" data-id="44867378872633" onclick="addToCartAndClosePopUp()">
-<label class="lockIn" for="radio2" onclick="addToCartAndClosePopUp()" data-id="44867378872633">
+     <input type="radio" name="wgshipping" value="44867378872633"  id="radio2" data-product-id="44867378872633" onclick="addToCartAndClosePopUp()">
+<label class="lockIn" for="radio2" onclick="addToCartAndClosePopUp()" data-product-id="44867378872633">
     <span class="planHead">Standard Delivery</span>
     <div class="moneySec">
         <div class="billySign">$</div>
@@ -107,7 +85,7 @@
 </div>
 </div>
 
-
+<button type="submit" name="add" class="daButton btn" id="addToCartBtn" type="">Add to Cart</button>
 
   </form>
 <div style="margin-top: 30px;font-size: 12px;font-style: italic;">
@@ -122,23 +100,34 @@ Disclaimer: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eius
 </div>
 
 <script>
-  var radios = document.getElementsByName('wg-product');
-for (var i = 0; i < radios.length; i++) {
-  radios[i].addEventListener('click', function() {
-    var selectedProductId = this.getAttribute('data-product-id');
-    var quantity = 1;
-    var properties = {};
-    
-    Shopify.addItem(selectedProductId, quantity, properties, {
-      "success": function(data) {
-        // Close the popup once the item is added to cart
-        var popup = document.getElementById("wgPopup");
-        popup.classList.toggle("show");
-      },
-      "error": function(XMLHttpRequest, textStatus) {
-        alert("Unable to add item to cart. Please try again.");
-      }
+  (function() {
+  var addToCartForm = document.forms['product-form'];
+  if (!addToCartForm) return;
+
+  var variantRadioButtons = addToCartForm.querySelectorAll('input[type="radio"][name="wgshipping"]');
+  for (var i = 0; i < variantRadioButtons.length; i++) {
+    variantRadioButtons[i].addEventListener('change', function(event) {
+      var variantId = event.target.value;
+      var formData = new FormData(addToCartForm);
+      formData.append('ajax', true);
+      formData.append('quantity', 1);
+      formData.append('id', variantId);
+
+      fetch('/cart/add.js', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Handle success case here
+        console.log('Product added to cart:', data);
+      })
+      .catch(error => {
+        // Handle error case here
+        console.error('Error adding product to cart:', error);
+      });
     });
-  });
-}
+  }
+})();
+
 </script>
