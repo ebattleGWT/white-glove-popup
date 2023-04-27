@@ -1,34 +1,45 @@
-// Helper function to add product to cart
-function addToCart(productId, quantity) {
-  jQuery.post('/cart/add.js', {
-    quantity: quantity,
-    id: productId
-  });
+function showPopup() {
+  var cartItems = JSON.parse(localStorage.getItem('cart'));
+  var popup = document.getElementById('wgPopup');
+  var radioBtn1 = document.getElementById('radio-1');
+  var radioBtn2 = document.getElementById('radio-2');
+  var popupClosed = localStorage.getItem('popupClosed');
+
+  if (!popupClosed) {
+    for (var i = 0; i < cartItems.length; i++) {
+      if (cartItems[i].sku === '7409302' || cartItems[i].sku === '7409002') {
+        popup.style.display = 'block';
+      }
+    }
+
+    radioBtn1.addEventListener('click', function() {
+      addProductToCart('44860701573433');
+      popup.style.display = 'none';
+      localStorage.setItem('popupClosed', true);
+    });
+
+    radioBtn2.addEventListener('click', function() {
+      addProductToCart('44867378872633');
+      popup.style.display = 'none';
+      localStorage.setItem('popupClosed', true);
+    });
+  }
 }
 
-// Helper function to close popup and add selected option to cart
-function closePopupAndAddToCart() {
-  var selectedOption = jQuery('input[name="wgshipping"]:checked').val();
-  if (selectedOption === 'option1') {
-    addToCart('7974437159225', 1); // product id for shipping sku 1
-  } else if (selectedOption === 'option2') {
-    addToCart('7974438666553', 1); // product id for shipping sku 2
-  }
-  jQuery('.wg-popup').fadeOut();
+function addProductToCart(productId) {
+  var form = document.createElement('form');
+  form.method = 'POST';
+  form.action = '/cart/add';
+  form.enctype = 'multipart/form-data';
+  
+  var input = document.createElement('input');
+  input.type = 'hidden';
+  input.name = 'id';
+  input.value = productId;
+  
+  form.appendChild(input);
+  document.body.appendChild(form);
+  form.submit();
 }
 
-// Show popup when add to cart is clicked for specified SKUs
-jQuery('.product-form__cart-submit [type="submit"]').on('click', function() {
-  var productSku = jQuery('.product-form__input[name="id"]').val();
-  if (productSku === '7409302' || productSku === '7409002') {
-    jQuery('.wg-popup').fadeIn();
-  }
-});
-
-// Close popup and add selected option to cart when radio button is clicked
-jQuery('input[name="wgshipping"]').on('click', closePopupAndAddToCart);
-
-// Close popup when close button is clicked
-jQuery('.wg-popup__close-btn').on('click', function() {
-  jQuery('.wg-popup').fadeOut();
-});
+showPopup();
