@@ -1,4 +1,6 @@
-function showPopup() {
+document.addEventListener("DOMContentLoaded", function() {
+  var popup = document.getElementById('wgPopup');
+ function showPopup() {
   var cartItems = JSON.parse(localStorage.getItem('cart'));
   var popup = document.getElementById('wgPopup');
   var radioBtn1 = document.getElementById('radio-1');
@@ -43,3 +45,5 @@ function addProductToCart(productId) {
 }
 
 showPopup();
+
+});
