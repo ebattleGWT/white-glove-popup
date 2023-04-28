@@ -13,61 +13,24 @@
    popup.classList.remove("show");
   popup.classList.toggle("hide");
 }
-//  whiteGlovePop();
-//var sku1='7409002';
-//var sku2='7409302';
-//var sku3='RYDER_HOMEDELIVERY';
-//var sku4='RYDER_WHITEGLOVE';
 
-function quantityCheck() {
-  var sku1 = '7409002';
-  var sku2 = '7409302';
-  var sku3 = 'RYDER_HOMEDELIVERY'; 
-  var sku4 = 'RYDER_WHITEGLOVE'; 
-
-  var cartItems = {{ cart.items | json }};
-  var sku1Qty = 0;
-  var sku2Qty = 0;
-
-  for (var i = 0; i < cartItems.length; i++) {
-    if (cartItems[i].sku == sku1) {
-      sku1Qty += cartItems[i].quantity;
-    }
-    if (cartItems[i].sku == sku2) {
-      sku2Qty += cartItems[i].quantity;
-    }
-    if (cartItems[i].sku == sku3) {
-      sku3Qty += cartItems[i].quantity;
-    }
-    if (cartItems[i].sku == sku4) {
-      sku4Qty += cartItems[i].quantity;
-    }
-    if (cartItems[i].sku == sku3) {
-      closeWG();
-      break;
-    }
-    if (cartItems[i].sku == sku4) {
-      closeWG();
-      break;
-    }
-  }
-
-  if (sku1Qty + sku2Qty > sku3Qty + sku4Qty) {
-    whiteGlovePop();
-  } else {
-    closeWG();
-  }
+var sku1='7409002';
+var sku2='7409302'
+var sku3='RYDER_HOMEDELIVERY';
+var sku4='RYDER_WHITEGLOVE'; 
+var cartItems = {{ cart.items | json }};
+for (var i = 0; i < cartItems.length; i++) {
+if (cartItems[i].sku == sku1 || cartItems[i].sku == sku2) {
+whiteGlovePop();
+break; // Exit the loop early since the popup should only be shown once
 }
-  
- // var sku1 = '7409002';
- // var sku2 = '7409302';
- // var cartItems = {{ cart.items | json }};
-  //for (var i = 0; i < cartItems.length; i++) {
-   // if (cartItems[i].sku == sku1 || cartItems[i].sku == sku2) {
-    //  whiteGlovePop();
-    //  break; // Exit the loop early since the popup should only be shown once
-   // }
- // }
+}
+for (var i = 0; i < cartItems.length; i++) {
+if (cartItems[i].sku == sku3 || cartItems[i].sku == sku4) {
+closeWG();
+break; // Exit the loop early since the popup should only be shown once
+}
+}
 
 function addItemToCart() {
 // Get the product ID and variant ID from the radio button
