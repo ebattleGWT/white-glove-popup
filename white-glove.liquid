@@ -1,5 +1,5 @@
 {{ 'wgPopup.css' | asset_url | stylesheet_tag }}
-{{ '//sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js' | script_tag }}
+
 
 
 <script>
@@ -7,40 +7,75 @@
     var popup = document.getElementById("wgPopup");
     popup.classList.toggle("show");
   }
-
-  var sku1 = '7409002';
-  var sku2 = '7409302';
-  var cartItems = {{ cart.items | json }};
-  for (var i = 0; i < cartItems.length; i++) {
-    if (cartItems[i].sku == sku1 || cartItems[i].sku == sku2) {
-      whiteGlovePop();
-      break; // Exit the loop early since the popup should only be shown once
-    }
+function closewhiteGlovePop() {
+    var popup = document.getElementById("wgPopup");
+    popup.classList.remove("show");
   }
 
 
-document.addEventListener('DOMContentLoaded', function() {
-  var addToCartForm = document.getElementById('add-to-cart-form');
-  addToCartForm.addEventListener('submit', function(event) {
-    event.preventDefault();
-
-    var selectedRadioButton = document.querySelector('input[name="wgshipping"]:checked');
-    var productId = selectedRadioButton.getAttribute('data-product-id');
-    var variantId = selectedRadioButton.getAttribute('data-variant-id');
-    var quantity = document.getElementById('quantity').value;
-    var properties = {};
-
-    Shopify.addItem(productId, quantity, {
-      variant_id: variantId,
-      properties: properties
-    }, function(response) {
-      // Callback function to handle the response from the Shopify API
-      console.log(response);
-      window.location.href = '/cart'; // Redirect to the cart page
-    });
-  });
-});
+ var sku1 = '7409002';
+  var sku2 = '7409302';
   
+  function showWhiteGlovePop() {
+    var quantitySku1 = 0;
+    var quantitySku2 = 0;
+    var items = {{ cart.items }};
+    
+    for (var i = 0; i < items.length; i++) {
+      if (items[i].sku === sku1) {
+        quantitySku1 += items[i].quantity;
+      } else if (items[i].sku === sku2) {
+        quantitySku2 += items[i].quantity;
+      }
+    }
+    
+    var qtyInput = document.getElementById("quantity");
+    var qtyValue = parseInt(qtyInput.value);
+
+    if ((sku1 == '{{product.sku}}' && quantitySku1 < qtyValue) || (sku2 == '{{product.sku}}' && quantitySku2 < qtyValue)) {
+      return;
+    }
+
+    document.getElementById('white-glove-popup').classList.add('open');
+  }
+
+  function closeWhiteGlovePop() {
+    document.getElementById('white-glove-popup').classList.remove('open');
+  }
+
+  
+ // var sku1 = '7409002';
+ // var sku2 = '7409302';
+ // var cartItems = {{ cart.items | json }};
+  //for (var i = 0; i < cartItems.length; i++) {
+  //  if (cartItems[i].sku == sku1 || cartItems[i].sku == sku2) {
+   //   whiteGlovePop();
+   //   break; // Exit the loop early since the popup should only be shown once
+   // }
+ // }
+
+function addItemToCart() {
+// Get the product ID and variant ID from the radio button
+var productId = document.querySelector('input[name="wgshipping"]:checked').getAttribute('data-product-id');
+var variantId = document.querySelector('input[name="wgshipping"]:checked').getAttribute('data-variant-id');
+
+// Add the product variant to the cart
+var cartUrl = '/cart/add.js';
+var formData = new FormData();
+formData.append('id', variantId);
+formData.append('quantity', 1);
+fetch(cartUrl, {
+  method: 'POST',
+  body: formData
+}).then(function(response) {
+  // Redirect the customer to the cart page
+  window.location.href = '/cart';
+  // Close the popup
+  closewhiteGlovePop()
+}).catch(function(error) {
+  console.error(error);
+});
+}
 </script>
     <div class="popup" id="myButton"> 
         
@@ -56,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="daContent">
         <h1>Shipping Options</h1>
 <div class="wgSecOptions">
- <form id="add-to-cart-form">
+ 
   <div class="cornRow">
     <input type="radio" name="wgshipping" value="whiteGlove" id="radio1" data-product-id="44860701573433" data-variant-id="44860701573433">
 <label class="lockIn" for="radio1"  data-product-id="44867378872633" data-variant-id="44860701573433">
@@ -108,8 +143,7 @@ document.addEventListener('DOMContentLoaded', function() {
     </ul>
 </div>
 </div>
-<button class="daButton" id="add-to-cart-button" type="submit">Add To Cart</button>
-      </form>
+<button class="daButton" id="add-to-cart-btn" onclick="addItemToCart()">Add To Cart</button>
 <div style="margin-top: 30px;font-size: 12px;font-style: italic;">
 Disclaimer: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 </div>
