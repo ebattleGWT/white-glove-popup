@@ -3,100 +3,34 @@
 
 
 <script>
-  function whiteGlovePop() {
-    var popup = document.getElementById("wgPopup");
-    popup.classList.toggle("show");
-  }
-
-
-
-
-// Check if SKU1 or SKU2 is in the cart
-  var sku1InCart = false;
-  var sku2InCart = false;
-  {% for item in cart.items %}
-    {% if item.variant.sku == '7409002' %}
-      sku1InCart = true;
-    {% elsif item.variant.sku == '7409302' %}
-      sku2InCart = true;
-    {% endif %}
-  {% endfor %}
-
-  // Set the gCheck cookie if SKU1 or SKU2 is in the cart
-  if (sku1InCart || sku2InCart) {
-    var cookieName = "gCheck";
-    var cookieValue = "true";
-    var expiryDate = new Date();
-    expiryDate.setTime(expiryDate.getTime() + (24 * 60 * 60 * 1000)); // 1 day in milliseconds
-    var cookieOptions = { expires: expiryDate.toUTCString() };
-    Shopify.setCookie(cookieName, cookieValue, cookieOptions);
-  }
-
-  
-  var sku1='7409002'
-  var sku2='7409302'
-
-
-document.addEventListener("DOMContentLoaded", function(){
-  document.addEventListener('click', function(e){
-    if(e.target.classList.contains('add-to-cart')){
-      var addedItem = e.target.closest('.product-item');
-      var addedItemSKU = addedItem.getAttribute('data-sku');
-      if (addedItemSKU == "sku1" || addedItemSKU == "sku2") {
-        showWhiteGlovePop();
-      }
-    }
-  })
-});
-
-//show pop up
-function showWhiteGlovePop() {
-  var gCheck = getCookie('gCheck');
-  if(gCheck != 'true'){
-    var popUp = document.querySelector('#wgPopup');
-    popUp.classList.add('show');
-    document.body.classList.add('no-scroll');
-    setCookie('gCheck', 'true', 1);
-  }
+ function whiteGlovePop() {
+  var popup = document.getElementById("wgPopup");
+   popup.classList.remove("hide");
+  popup.classList.toggle("show");
+}
+  function closeWG() {
+  var popup = document.getElementById("wgPopup");
+   popup.classList.remove("show");
+  popup.classList.toggle("hide");
 }
 
-//get cookie function
-function getCookie(name) {
-  var value = "; " + document.cookie;
-  var parts = value.split("; " + name + "=");
-  if (parts.length == 2) return parts.pop().split(";").shift();
+var sku1='7409002';
+var sku2='7409302'
+var sku3='RYDER_HOMEDELIVERY';
+var sku4='RYDER_WHITEGLOVE'; 
+var cartItems = {{ cart.items | json }};
+for (var i = 0; i < cartItems.length; i++) {
+if (cartItems[i].sku == sku1 || cartItems[i].sku == sku2) {
+whiteGlovePop();
+break; // Exit the loop early since the popup should only be shown once
 }
-
-//set cookie function
-function setCookie(name,value,days) {
-  var expires = "";
-  if (days) {
-    var date = new Date();
-    date.setTime(date.getTime() + (days*24*60*60*1000));
-    expires = "; expires=" + date.toUTCString();
-  }
-  document.cookie = name + "=" + (value || "")  + expires + "; path=/";
 }
-
-
-
-
-
-
-
-  
-
-
-  
- // var sku1 = '7409002';
- // var sku2 = '7409302';
- // var cartItems = {{ cart.items | json }};
-  //for (var i = 0; i < cartItems.length; i++) {
-   // if (cartItems[i].sku == sku1 || cartItems[i].sku == sku2) {
-    //  whiteGlovePop();
-    //  break; // Exit the loop early since the popup should only be shown once
-   // }
- // }
+for (var i = 0; i < cartItems.length; i++) {
+if (cartItems[i].sku == sku3 || cartItems[i].sku == sku4) {
+closeWG();
+break; // Exit the loop early since the popup should only be shown once
+}
+}
 
 function addItemToCart() {
 // Get the product ID and variant ID from the radio button
@@ -115,16 +49,25 @@ fetch(cartUrl, {
   // Redirect the customer to the cart page
   window.location.href = '/cart';
   // Close the popup
-  $('.white-glove-popup').hide();
+  $('.popuptext').hide();
 }).catch(function(error) {
   console.error(error);
 });
 }
+
+
+
+
+
+
+
+
+  
 </script>
     <div class="popup" id="myButton"> 
         
 
-        <div class="popuptext" id="wgPopup">
+        <div class="popuptext .hide" id="wgPopup">
             <div class="logoBox">
            <div class="daLogo"> <img src="https://clyde-shop-files.s3.amazonaws.com/GWT_Staging_1681151286413.png"> </div>
            <div class="daSplit"></div>
@@ -198,4 +141,3 @@ Disclaimer: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eius
 </div>
   </div>
 </div>
-
