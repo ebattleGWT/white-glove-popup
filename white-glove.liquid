@@ -33,7 +33,8 @@
   }
 
   
-  
+  var sku1='7409002'
+  var sku2='7409302'
 
 
 document.addEventListener("DOMContentLoaded", function(){
@@ -52,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function(){
 function showWhiteGlovePop() {
   var gCheck = getCookie('gCheck');
   if(gCheck != 'true'){
-    var popUp = document.querySelector('.white-glove-popup');
+    var popUp = document.querySelector('#wgPopup');
     popUp.classList.add('show');
     document.body.classList.add('no-scroll');
     setCookie('gCheck', 'true', 1);
