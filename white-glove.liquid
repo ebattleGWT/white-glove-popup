@@ -3,88 +3,83 @@
 
 
 <script>
-  function whiteGlovePop() {
-    var popup = document.getElementById("wgPopup");
-    popup.classList.toggle("show");
-  }
+ function whiteGlovePop() {
+  var popup = document.getElementById("wgPopup");
+   popup.classList.remove("hide");
+  popup.classList.toggle("show");
+}
 
+function closeWG() {
+  var popup = document.getElementById("wgPopup");
+  popup.classList.remove("show");
+  popup.classList.toggle("hide");
+}
+var sku1='7409002';
+var sku2='7409302';
+var sku3='7409502';
+var sku4='7409602';
 
-
-
-// Check if SKU1 or SKU2 is in the cart
+function checkCartQuantity() {
   var sku1InCart = false;
   var sku2InCart = false;
+  var sku3InCart = false;
+  var sku4InCart = false;
+  var sku1Qty = 0;
+  var sku2Qty = 0;
+  var sku3Qty = 0;
+  var sku4Qty = 0;
   {% for item in cart.items %}
-    {% if item.variant.sku == '7409002' %}
+    {% if item.product.sku == sku1 %}
       sku1InCart = true;
-    {% elsif item.variant.sku == '7409302' %}
+      sku1Qty = {{ item.quantity }};
+    {% elsif item.product.sku == sku2 %}
       sku2InCart = true;
+      sku2Qty = {{ item.quantity }};
+    {% elsif item.product.sku == sku3 %}
+      sku3InCart = true;
+      sku3Qty = {{ item.quantity }};
+    {% elsif item.product.sku == sku4 %}
+      sku4InCart = true;
+      sku4Qty = {{ item.quantity }};
     {% endif %}
   {% endfor %}
 
-  // Set the gCheck cookie if SKU1 or SKU2 is in the cart
-  if (sku1InCart || sku2InCart) {
-    var cookieName = "gCheck";
-    var cookieValue = "true";
-    var expiryDate = new Date();
-    expiryDate.setTime(expiryDate.getTime() + (24 * 60 * 60 * 1000)); // 1 day in milliseconds
-    var cookieOptions = { expires: expiryDate.toUTCString() };
-    Shopify.setCookie(cookieName, cookieValue, cookieOptions);
+  if ((sku1InCart || sku2InCart) && (sku1Qty + sku2Qty > sku3Qty + sku4Qty)) {
+    whiteGlovePop();
   }
+  else closeWG();
+}
 
+checkCartQuantity();
   
-  var sku1='7409002'
-  var sku2='7409302'
+  // Check if the total quantity of sku1 and sku2 is greater than sku3 in the cart
+var sku1Quantity = sku1qty;
+var sku2Quantity = sku2qty;
+var sku3Quantity = sku3qty;
+var sku4Quantity = sku4qty;
+{% for item in cart.items %}
+  {% if item.product.sku == 'sku1' %}
+    sku1Quantity += item.quantity;
+  {% elsif item.product.sku == 'sku2' %}
+    sku2Quantity += item.quantity;
+  {% elsif item.product.sku == 'sku3' %}
+    sku3Quantity += item.quantity;
+    {% elsif item.product.sku == 'sku4' %}
+    sku4Quantity += item.quantity;
+  {% endif %}
+{% endfor %}
 
+console.log('sku1Quantity: ' + sku1Quantity);
+console.log('sku2Quantity: ' + sku2Quantity);
+console.log('sku3Quantity: ' + sku3Quantity);
 
-document.addEventListener("DOMContentLoaded", function(){
-  document.addEventListener('click', function(e){
-    if(e.target.classList.contains('add-to-cart')){
-      var addedItem = e.target.closest('.product-item');
-      var addedItemSKU = addedItem.getAttribute('data-sku');
-      if (addedItemSKU == "sku1" || addedItemSKU == "sku2") {
-        showWhiteGlovePop();
-      }
-    }
-  })
-});
-
-//show pop up
-function showWhiteGlovePop() {
-  var gCheck = getCookie('gCheck');
-  if(gCheck != 'true'){
-    var popUp = document.querySelector('#wgPopup');
-    popUp.classList.add('show');
-    document.body.classList.add('no-scroll');
-    setCookie('gCheck', 'true', 1);
+if ((sku1Quantity + sku2Quantity) > sku3Quantity) {
+  whiteGlovePop();
+}
+  else {
+    closeWG();
   }
-}
 
-//get cookie function
-function getCookie(name) {
-  var value = "; " + document.cookie;
-  var parts = value.split("; " + name + "=");
-  if (parts.length == 2) return parts.pop().split(";").shift();
-}
-
-//set cookie function
-function setCookie(name,value,days) {
-  var expires = "";
-  if (days) {
-    var date = new Date();
-    date.setTime(date.getTime() + (days*24*60*60*1000));
-    expires = "; expires=" + date.toUTCString();
-  }
-  document.cookie = name + "=" + (value || "")  + expires + "; path=/";
-}
-
-
-
-
-
-
-
-  
 
 
   
@@ -115,16 +110,25 @@ fetch(cartUrl, {
   // Redirect the customer to the cart page
   window.location.href = '/cart';
   // Close the popup
-  $('.white-glove-popup').hide();
+  $('.popuptext').hide();
 }).catch(function(error) {
   console.error(error);
 });
 }
+
+
+
+
+
+
+
+
+  
 </script>
     <div class="popup" id="myButton"> 
         
 
-        <div class="popuptext" id="wgPopup">
+        <div class="popuptext .hide" id="wgPopup">
             <div class="logoBox">
            <div class="daLogo"> <img src="https://clyde-shop-files.s3.amazonaws.com/GWT_Staging_1681151286413.png"> </div>
            <div class="daSplit"></div>
@@ -198,4 +202,3 @@ Disclaimer: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eius
 </div>
   </div>
 </div>
-
